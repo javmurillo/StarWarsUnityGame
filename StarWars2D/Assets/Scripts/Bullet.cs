@@ -3,18 +3,19 @@ using System.Collections;
 
 public class Bullet : MonoBehaviour 
 {
-	public GameObject bulletExplosion;		// Prefab of explosion effect.
-	private Rigidbody2D myRigidbody;
-    private bool reflected = false;
+	public GameObject bulletExplosion;		// Prefab de la explosión
+	private Rigidbody2D myRigidbody;        // Referencia al rigidbody2D
+    private bool reflected = false;         // Si la bala ha sido o no reflectada
 
-	AudioSource[] allMyAudioSources;
-    private PlayerController playerScript;
+	AudioSource[] allMyAudioSources;        // Componentes de audio
+    private PlayerController playerScript;  // Referencia al script del jugador
 
 
     void Start () 
 	{
-		// Destroy the rocket after 5 seconds if it doesn't get destroyed before then.
+		// Destruye si la bala en 5 segundos si no ha sido destruida
 		Destroy(gameObject, 5);
+        // Inicialización de componentes
 		myRigidbody = GetComponent<Rigidbody2D> ();
 		allMyAudioSources = GetComponents<AudioSource>();
         GameObject thePlayer = GameObject.Find("Hero");
@@ -26,22 +27,23 @@ public class Bullet : MonoBehaviour
 
     void OnExplode()
 	{
-		// Create a quaternion with a random rotation in the z-axis.
+        // Se da una rotación aleatoria
 		Quaternion randomRotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
 		
-		// Instantiate the explosion where the rocket is with the random rotation.
+		// Se instancia la explosion
 		Instantiate(bulletExplosion, transform.position, randomRotation);
 	}
 	
 	void OnTriggerEnter2D (Collider2D col) 
 	{
+        //Si colisiona con el jugador
         if (col.tag == "Player") {
-            col.GetComponent<PlayerHealth>().serDisparado(this.GetComponent<Collider2D>());
+            col.GetComponent<PlayerHealth>().bulletImpact(this.GetComponent<Collider2D>());
             OnExplode();
             Destroy(gameObject);
 
         }
-
+        //Si colisiona con el battledroid
         else if (col.tag == "BattleDroid")
         {
             if (reflected)
@@ -52,6 +54,18 @@ public class Bullet : MonoBehaviour
             }
 
         }
+        //Si colisiona con el soldado
+        else if (col.tag == "Soldier")
+        {
+            if (reflected)
+            {
+                col.GetComponent<Soldier>().Hurt();
+                OnExplode();
+                Destroy(gameObject);
+            }
+
+        }
+        //Si colisiona con el Droideka
         else if (col.tag == "Droideka")
         {
             if (reflected)
@@ -61,14 +75,6 @@ public class Bullet : MonoBehaviour
             }
 
         }
-
-        // Otherwise if the player manages to shoot himself...
-        /*else
-		{
-			// Instantiate the explosion and destroy the rocket.
-			OnExplode();
-			Destroy (gameObject);
-		}*/
     }
 
     public void setReflected(bool refl)
@@ -76,10 +82,4 @@ public class Bullet : MonoBehaviour
         reflected = refl;
     }
 
-    /*
-	IEnumerator MyFunction(Collider2D col, float delayTime) {
-		yield return new WaitForSeconds(delayTime);
-		Destroy (gameObject);
-
-	}*/
 }

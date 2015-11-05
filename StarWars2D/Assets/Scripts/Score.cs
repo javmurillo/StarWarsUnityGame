@@ -3,30 +3,23 @@ using System.Collections;
 
 public class Score : MonoBehaviour
 {
-	public int score = 0;					// The player's score.
+	public int score = 0;					// La puntuación del jugador
 
-	private PlayerController playerControl;	// Reference to the player control script.
-	private int previousScore = 0;			// The score in the previous frame.
+	private PlayerController playerControl;	// Referencia al script PlayerController
+	private int previousScore = 0;			// La puntuación en el anterior frame
 
 
 	void Awake ()
 	{
-		// Setting up the reference.
+		// Inicialización de componentes
 		playerControl = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
 	}
 
 
 	void Update ()
 	{
-		// Set the score text.
+		// Se establece el score
 		GetComponent<GUIText>().text = "Score: " + score;
-
-		// If the score has changed...
-		if(previousScore != score)
-			// ... play a taunt.
-
-
-		// Set the previous score to this frame's score.
 		previousScore = score;
 	}
 

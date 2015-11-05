@@ -15,138 +15,129 @@ public class PlayerHealth : MonoBehaviour
 	private Vector3 healthScale;				// The local scale of the health bar initially (with full health).
 	private PlayerController playerControl;		// Reference to the PlayerControl script.
 	private Animator anim;						// Reference to the Animator on the player
+    public GameObject menuGameOver;             // Referencia a la pantalla de GameOver
+    private GameObject rg;                      // Referencia al GameObject del Personaje
+    private SpriteRenderer ren;                 // Referencia al SpriteRenderer del Personaje
 
-    private GameObject rg;
-    private Renderer ren;
-
-    Rigidbody2D body;
-    Vector3 pushDir;
-    float power = 2.0f;
-    float minPower = 0.5f;
-    float maxPower = 3.0f;
+    Rigidbody2D body;                           //Referencia al RigidBody2D del Personaje
 
     void Awake ()
 	{
-		// Setting up references.
+		// Inicialización de componentes
 		playerControl = GetComponent<PlayerController>();
 		healthBar = GameObject.Find("HealthBar").GetComponent<SpriteRenderer>();
 		anim = GetComponent<Animator>();
-
-		// Getting the intial scale of the healthbar (whilst the player has full health).
 		healthScale = healthBar.transform.localScale;
         rg = GameObject.Find("Hero");
         body = rg.GetComponent<Rigidbody2D>();
-        ren = rg.GetComponent<Renderer>();
+        ren = rg.GetComponent<SpriteRenderer>();
 
     }
 
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        //Debug.Log("nombre: " + col.gameObject.name);
-		// If the colliding gameobject is an Enemy...
-		if(col.tag == "BattleDroid" || col.tag == "Droideka")
+        // Si el collider es un enemigo
+		if(col.tag == "BattleDroid" || col.tag == "Droideka" || col.tag == "Soldier")
 		{
-            // ... and if the time exceeds the time of the last hit plus the time between hits...
-            //if (Time.time > lastHitTime + repeatDamagePeriod) 
-            if (true)
+            // Y no excede el tiempo máximo de golpe
+            if (Time.time > lastHitTime + repeatDamagePeriod) 
             {
-                // ... and if the player still has health...
-                if (health > 0f)
+                // Y hay suficiente salud
+                if (health - damageAmount > 0f)
 				{
-					// ... take damage and reset the lastHitTime.
+					// Se hade daño y se resetea el tiempo
 					TakeDamage(col.transform); 
 					lastHitTime = Time.time; 
 				}
-				// If the player doesn't have health, do some stuff, let him fall into the river to reload the level.
+				// Si no se tiene suficiente salud
 				else
 				{
-					// ... disable user Player Control script
-					GetComponent<PlayerController>().enabled = false;
+                    anim.SetTrigger("Dead");
+                    health = 0;
+                    UpdateHealthBar();
+                    GetComponent<PlayerController>().enabled = false;
 
-					// ... disable the Gun script to stop a dead guy shooting a nonexistant bazooka
-					//GetComponentInChildren<Gun>().enabled = false;
-
-					// ... Trigger the 'Die' animation state
-					anim.SetTrigger("Die");
 				}
 			 }
 		}
 	}
 
-    public void serDisparado(Collider2D col)
+    public void bulletImpact(Collider2D col)
     {
-        // ... and if the time exceeds the time of the last hit plus the time between hits...
-       // if (Time.time > lastHitTime + repeatDamagePeriod)
-        if (true) {
-            // ... and if the player still has health...
-            if (health > 0f)
+            // Si el impacto de bala no está dentro del periodo de invulnerabilidad
+            if (Time.time > lastHitTime + repeatDamagePeriod)
             {
-                // ... take damage and reset the lastHitTime.
-                TakeDamage(col.transform);
-                lastHitTime = Time.time;
-            }
-            // If the player doesn't have health, do some stuff, let him fall into the river to reload the level.
-            else
-            {
+                // Y se tiene suficiente vida
+                if (health - damageAmount > 0f)
+                {
+                   // Se hade daño y se resetea el tiempo
+                    TakeDamage(col.transform);
+                    lastHitTime = Time.time;
+                }
+				// Si no se tiene suficiente salud
+                else
+                {
+                anim.SetTrigger("Dead");
+                health = 0;
+                UpdateHealthBar();
 
-                // ... disable user Player Control script
                 GetComponent<PlayerController>().enabled = false;
+                //Se activa la pantalla de GameOver
+                menuGameOver.SetActive(true);
 
-                // ... disable the Gun script to stop a dead guy shooting a nonexistant bazooka
-                //GetComponentInChildren<Gun>().enabled = false;
-
-                // ... Trigger the 'Die' animation state
-                anim.SetTrigger("Die");
             }
+        }
+        
+    }
+    
+    //Parpadeo del sprite
+    IEnumerator Blink()
+    {
+        for (var n = 0; n < 5; n++)
+        {
+            ren.enabled = false;
+            yield return new WaitForSeconds(.1f);
+            ren.enabled = true;
+            yield return new WaitForSeconds(.1f);
+
         }
     }
 
-
+    
     void TakeDamage (Transform enemy)
 	{
 
-
-        Debug.Log("TAAAAG: " + enemy.tag);
-		// Make sure the player can't jump.
+		// El personaje no puede saltar
 		playerControl.jump = false;
-
+        //Recibe fuerza si y solo si no es un bala láser
         if (enemy.tag != "LaserBullet")
             body.velocity = (Vector3) body.velocity + Vector3.up * 2;
 
-
-        /* if (enemy.tag != "LaserBullet") {
-              float Xdif = transform.position.x - enemy.position.x;
-              float Ydif = transform.position.y - enemy.position.y;
-              transform.gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(Xdif, Ydif).normalized * 500); */
-
-
-
-
-        // Add a force to the player in the direction of the vector and multiply by the hurtForce.
-        //GetComponent<Rigidbody2D>().AddForce(hurtVector * hurtForce);
-        //  transform.Translate(Vector2.up * 5);
-
-        // Reduce the player's health by 10.
+        // Se reduce la vida del jugador
         health -= damageAmount;
 
-		// Update what the health bar looks like.
+		// Se actualiza la barra
 		UpdateHealthBar();
 
-		// Play a random clip of the player getting hurt.
-		int i = Random.Range (0, ouchClips.Length);
-		//AudioSource.PlayClipAtPoint(ouchClips[i], transform.position);
-	}
+        //Parpadeo del sprite
+        StartCoroutine(Blink());
+
+    }
 
 
-	public void UpdateHealthBar ()
+    public void UpdateHealthBar ()
 	{
-		// Set the health bar's colour to proportion of the way between green and red based on the player's health.
+        //Se actualiza la barra de salud
 		healthBar.material.color = Color.Lerp(Color.green, Color.red, 1 - health * 0.01f);
-
-		// Set the scale of the health bar to be proportional to the player's health.
 		healthBar.transform.localScale = new Vector3(healthScale.x * health * 0.01f, 1, 1);
 	}
+
+    void destroyAnimator()
+    {
+        //Se deshabilita la animación
+        anim.enabled = false;
+    }
 
 
 }

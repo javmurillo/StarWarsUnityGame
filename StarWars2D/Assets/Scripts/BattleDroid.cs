@@ -8,11 +8,11 @@ public class BattleDroid : MonoBehaviour
     private Rigidbody2D myRigidbody;        // Referencia al componente Rigidbody2D del personaje
     private Animator anim;                  // Referencia al componente Animator del personaje
     private AudioSource[] audioSources;     // Referencia a todas las componentes de audio asociadas a este personaje
-    private Score score;                  // Reference to the Score script.
+    private Score score;                    // Referencia al objeto Score
 
-    public GameObject pointsUI;   // A prefab of 100 that appears when the enemy dies.
+    public GameObject pointsUI;             // Referencia al prefab de 100 puntos
     private GameObject bulletSpawner;       // Objecto cuya posición será el inicio de la invocación del proyectil
-    private float xc = 1.86f;                  // Valor de ajuste del invocador de proyectiles en el eje X                   
+    private float xc = 1.86f;               // Valor de ajuste del invocador de proyectiles en el eje X                   
     private float yc = -0.3f;               // Valor de ajuste del invocador de proyectiles en el eje Y     
 
     public Rigidbody2D bullet;              // Prefab del proyectil (Bullet)
@@ -25,15 +25,15 @@ public class BattleDroid : MonoBehaviour
     public float attackDistance;            // Distancia a partir de la cual el personaje atacará
 	public float bulletSpeed = 10f;         // Para determinar la velocidad del proyectil
 	public float timeBetweenShots = 1f;     // Tiempo de espera entre proyectil y proyectil
-    public float HP = 100f;                      // Cuántas veces el personaje puede ser golpeado sin morir
+    public float HP = 100f;                 // Cuántas veces el personaje puede ser golpeado sin morir
     public int points;
     private float timestamp;                // Referencia de tiempo para la espera entre proyectil y proyectil
 
-    private SpriteRenderer healthBar;           // Reference to the sprite renderer of the health bar.
-    private Vector3 healthScale;                // The local scale of the health bar initially (with full health).
-    private Transform barrachild;
-    public GameObject sombra;
-    private GameObject go;
+    private SpriteRenderer healthBar;       // Reference to the sprite renderer of the health bar.
+    private Vector3 healthScale;            // The local scale of the health bar initially (with full health).
+    private Transform barrachild;           // Referencia a la barra de vida
+    public GameObject sombra;               // Referencia a la sombra debajo del personaje
+    private GameObject go;                  // GameObject para heredar y desheredar
 
 
     void Start() 
@@ -54,16 +54,17 @@ public class BattleDroid : MonoBehaviour
         audioSources = GetComponents<AudioSource>();
         score = GameObject.Find("Score").GetComponent<Score>();
 
-        //Instantiate(healthBdroid, new Vector3(0f,0f,0f), Quaternion.Euler(new Vector3(0, 0, 0)));
-         barrachild = transform.FindChild("ui_healthDisplayEnemy");
+        barrachild = transform.FindChild("ui_healthDisplayEnemy");
         healthBar = barrachild.FindChild("HealthBarEnemy").GetComponent<SpriteRenderer>();
 
-        // Getting the intial scale of the healthbar (whilst the player has full health).
+        // Se coge la referencia de la barra de vida estando ésta llena
         healthScale = healthBar.transform.localScale;
-
+        
+        //Se deshereda para que no rote la barra de vida a la vez que el personaje
         transform.DetachChildren();
         bulletSpawner.transform.parent = transform;
 
+        // Se hereda la sombra para que acompañe al personaje
         go = Instantiate(sombra, new Vector3(transform.position.x + 0.1f, transform.position.y - 1.3f, transform.position.z), Quaternion.Euler(new Vector3(0, 0, 0))) as GameObject;
         go.transform.parent = this.transform;
 
@@ -71,10 +72,10 @@ public class BattleDroid : MonoBehaviour
 
     void Update()
     {
-        // If the enemy has zero or fewer hit points and isn't dead yet...
+        // Si tiene 0 puntos o menos y no está muerto
         if (HP <= 0f && !dead)
-            // ... call the death function.
             Death();
+
         // Si el personaje no ha muerto
         if (!dead) {
             // Se calcula la distancia entre el objetivo y este personaje
@@ -139,11 +140,8 @@ public class BattleDroid : MonoBehaviour
 
     void Death ()
     {
-
- 
         //Se inicia la animación de muerte
         anim.SetTrigger("Dead");
-
 
         // Se reproduce el audio de muerte
         audioSources[0].Play();
@@ -152,15 +150,14 @@ public class BattleDroid : MonoBehaviour
         dead = true;
         Destroy(GetComponent<BoxCollider2D>());
 
-        // Increase the score by 100 points
+        // Se incrementa la puntuación
         score.score += points;
 
-        // Create a vector that is just above the enemy.
+        // Se instancia la animación de puntos
         Vector3 scorePos;
         scorePos = transform.position;
         scorePos.y += 1.5f;
 
-        // Instantiate the 100 points prefab at this point.
         Instantiate(pointsUI, scorePos, Quaternion.identity);
         go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y - 0.25f, go.transform.position.z);
         go.transform.localScale = new Vector3(3.760157f, 0.8064684f, 0.8064684f);
@@ -173,24 +170,23 @@ public class BattleDroid : MonoBehaviour
 
     public void Hurt()
     {
-        // Reduce the number of hit points by one.
-        HP -= 50f;
+        // Se reduce la vida
+        HP -= 100f;
+        if (HP <= 0) { HP = 0; }
         UpdateHealthBar();
     }
 
 
     public void UpdateHealthBar()
     {
-        // Set the health bar's colour to proportion of the way between green and red based on the player's health.
+        //Se actualiza la barra de vida
         healthBar.material.color = Color.Lerp(Color.green, Color.red, 1 - HP * 0.01f);
-
-        // Set the scale of the health bar to be proportional to the player's health.
         healthBar.transform.localScale = new Vector3(healthScale.x * HP * 0.01f, 1, 1);
     }
 
     void Destroy()
     {
-        // Destruye el gameObject
+        // Destruye el gameObject y su hijo
         Destroy(gameObject);
         Destroy(barrachild.gameObject);
 

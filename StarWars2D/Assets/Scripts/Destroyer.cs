@@ -3,11 +3,14 @@ using System.Collections;
 
 public class Destroyer : MonoBehaviour
 {
+    /*
+     * Clase que contiene métodos para destruir objetos
+     */
 	public bool destroyOnAwake;			// Whether or not this gameobject should destroyed after a delay, on Awake.
 	public float awakeDestroyDelay;		// The delay for destroying it on Awake.
-	public bool findChild = false;				// Find a child game object and delete it
+	public bool findChild = false;	    // Find a child game object and delete it
 	public string namedChild;			// Name the child object in Inspector
-    private SpriteRenderer sr;
+    private SpriteRenderer sr;          // Referencia al SpriteRenderer
 
 
 	void Awake ()

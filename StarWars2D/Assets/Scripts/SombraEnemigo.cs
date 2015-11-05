@@ -3,20 +3,18 @@ using System.Collections;
 
 public class SombraEnemigo : MonoBehaviour
 {
-    public Vector3 offset;          // The offset at which the Health Bar follows the player.
+    public Vector3 offset;          // Offset de la sombra para seguir al personaje
 
-    private Transform player;       // Reference to the player.
+    private Transform player;       // Referencia al jugador
 
 
     void Awake()
     {
-        // Setting up the reference.
         player = transform.parent;
     }
 
     void Update()
     {
-        // Set the position to the player's position with the offset.
         transform.position = new Vector3(player.position.x + offset.x, transform.position.y, player.position.z + offset.z);
 
     }

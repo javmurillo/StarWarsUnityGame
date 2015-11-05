@@ -8,12 +8,12 @@ public class Droideka : MonoBehaviour
     private Rigidbody2D myRigidbody;        // Referencia al componente Rigidbody2D del personaje
     private Animator anim;                  // Referencia al componente Animator del personaje
     private AudioSource[] audioSources;     // Referencia a todas las componentes de audio asociadas a este personaje
-    private Score score;                  // Reference to the Score script.
+    private Score score;                    // Reference to the Score script.
 
-    public GameObject pointsUI;   // A prefab of 100 that appears when the enemy dies.
+    public GameObject pointsUI;             // A prefab of 100 that appears when the enemy dies.
     private GameObject bulletSpawner;       // Objecto cuya posición será el inicio de la invocación del proyectil
-    private float xc = 1.55f;                  // Valor de ajuste del invocador de proyectiles en el eje X                   
-    private float yc = -0.01f;               // Valor de ajuste del invocador de proyectiles en el eje Y     
+    private float xc = 1.55f;               // Valor de ajuste del invocador de proyectiles en el eje X                   
+    private float yc = -0.01f;              // Valor de ajuste del invocador de proyectiles en el eje Y     
 
     public Rigidbody2D bullet;              // Prefab del proyectil (Bullet)
 
@@ -21,24 +21,24 @@ public class Droideka : MonoBehaviour
     public bool facingRight = false;        // Para determinar hacia dónde está mirando el personaje
     private bool dead = false;              // Para determinar si el personaje ha muerto o no
 
-    public int maxSpeedRunning = 5;             // Determina la velocidad de movimiento del personaje
-    public int maxSpeedWalking = 2;             // Determina la velocidad de movimiento del personaje
+    public int maxSpeedRunning = 5;         // Determina la velocidad de movimiento del personaje
+    public int maxSpeedWalking = 2;         // Determina la velocidad de movimiento del personaje
     public float attackDistance;            // Distancia a partir de la cual el personaje atacará
     public float deployDistance;            // Distancia a partir de la cual el personaje se desplegará
     public float bulletSpeed = 10f;         // Para determinar la velocidad del proyectil
     public float timeBetweenShots = 1f;     // Tiempo de espera entre proyectil y proyectil
-    public float HP = 200;                      // Cuántas veces el personaje puede ser golpeado sin morir
+    public float HP = 200;                  // Cuántas veces el personaje puede ser golpeado sin morir
     private float timestamp;                // Referencia de tiempo para la espera entre proyectil y proyectil
-    private bool running = true;
-    private bool deployed = false;
-    private bool firstShot = true;
-    public int points;
+    private bool running = true;            // Si está corriendo o no
+    private bool deployed = false;          // Si ha sido desplegado o no
+    private bool firstShot = true;          // Si ha disparado ya o no
+    public int points;                      // Puntos que otorga
 
 
-    private SpriteRenderer healthBar;           // Reference to the sprite renderer of the health bar.
-    private Vector3 healthScale;                // The local scale of the health bar initially (with full health).
-    private Transform barrachild;
-    public GameObject sombra;
+    private SpriteRenderer healthBar;           // Referencia a la barra de vida
+    private Vector3 healthScale;                // Escala de la barra de vida
+    private Transform barrachild;               // Referencia al objeto Transform de la barra
+    public GameObject sombra;                   // Sombra debajo del personaje
 
     public bool facing()
     {
@@ -69,7 +69,6 @@ public class Droideka : MonoBehaviour
 
         healthBar = barrachild.FindChild("HealthBarEnemy").GetComponent<SpriteRenderer>();
 
-        // Getting the intial scale of the healthbar (whilst the player has full health).
         healthScale = healthBar.transform.localScale;
 
         transform.DetachChildren();
@@ -82,7 +81,7 @@ public class Droideka : MonoBehaviour
 
     void Update()
     {
-        // If the enemy has zero or fewer hit points and isn't dead yet...
+        // Si tienes 0 puntos o menos y no está muerto
         if (HP <= 0 && !dead)
             // ... call the death function.
             Death();
@@ -111,7 +110,6 @@ public class Droideka : MonoBehaviour
             // Si no, camina hacia el objetivo.
             else
             {
-
                 if (running)
                 {
                     // Se dispara el trigger de la animación de caminar
@@ -127,10 +125,7 @@ public class Droideka : MonoBehaviour
                     transform.position = Vector2.MoveTowards(transform.position,
                         new Vector2(target.position.x, transform.position.y), maxSpeedWalking * Time.deltaTime);
                 }
-
             }
-
-
         }
         // Se cachea la posición en el eje X del heroe y el personaje.
         float heroX = target.position.x;
@@ -203,15 +198,13 @@ public class Droideka : MonoBehaviour
         dead = true;
         Destroy(GetComponent<BoxCollider2D>());
 
-        // Increase the score by 100 points
+        // Se incrementan los puntos
         score.score += points;
 
-        // Create a vector that is just above the enemy.
+        // Se instancia la animación de puntos
         Vector3 scorePos;
         scorePos = transform.position;
         scorePos.y += 1.5f;
-
-        // Instantiate the 100 points prefab at this point.
         Instantiate(pointsUI, scorePos, Quaternion.identity);
 
         // Este personaje se destruirá en dos segundos.
@@ -221,18 +214,17 @@ public class Droideka : MonoBehaviour
 
     public void Hurt()
     {
-        // Reduce the number of hit points by one.
-        HP -= 50f;
+        // Se reduce la vida
+        HP -= 40f;
+        if (HP <= 0) { HP = 0; }
         UpdateHealthBar();
     }
 
 
     public void UpdateHealthBar()
     {
-        // Set the health bar's colour to proportion of the way between green and red based on the player's health.
+        // Se actualiza la barra de vida
         healthBar.material.color = Color.Lerp(Color.green, Color.red, 1 - HP * 0.01f);
-
-        // Set the scale of the health bar to be proportional to the player's health.
         healthBar.transform.localScale = new Vector3(healthScale.x * HP * 0.01f, 1, 1);
     }
 

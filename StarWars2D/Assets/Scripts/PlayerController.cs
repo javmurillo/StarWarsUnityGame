@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     private bool attack = false;            // Para determinar si el personaje ha de realizar un ataque primario.
     private bool attack2 = false;           // Para determinar si el personaje ha de realizar un ataque secundario
     private bool jumped = false;            // Para determinar si el personaje ha saltado
-    private bool hit = false;            // Para determinar si el personaje ha saltado
+    private bool hit = false;               // Para determinar si el personaje ha saltado
 
 
     public float maxSpeed = 7f;             // Para determinar la velocidad de movimiento del personaje
@@ -41,9 +41,7 @@ public class PlayerController : MonoBehaviour
 	
 	void Update()
 	{
-        if (Input.GetKeyDown(KeyCode.R))
-            Application.LoadLevel(0);
-
+ 
         // El personaje estará en el suelo si una línea de casteo al objeto groundCheck impacta con la capa "Ground"
         grounded = Physics2D.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"));
 		

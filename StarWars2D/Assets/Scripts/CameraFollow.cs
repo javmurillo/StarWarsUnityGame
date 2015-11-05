@@ -37,7 +37,9 @@ public class CameraFollow : MonoBehaviour
 
 	void FixedUpdate ()
 	{
-		TrackPlayer();
+        if (Input.GetKeyDown(KeyCode.R))
+            Application.LoadLevel(1);
+        TrackPlayer();
 	}
 	
 	

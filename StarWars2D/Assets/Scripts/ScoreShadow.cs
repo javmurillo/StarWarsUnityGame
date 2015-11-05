@@ -3,12 +3,12 @@ using System.Collections;
 
 public class ScoreShadow : MonoBehaviour
 {
-	public GameObject guiCopy;		// A copy of the score.
+	public GameObject guiCopy;		// Referencia a copia del gui a sombrear
 
 
 	void Awake()
 	{
-		// Set the position to be slightly down and behind the other gui.
+		// Se establece la posición un poco por debajo
 		Vector3 behindPos = transform.position;
 		behindPos = new Vector3(guiCopy.transform.position.x, guiCopy.transform.position.y-0.005f, guiCopy.transform.position.z-1);
 		transform.position = behindPos;
@@ -17,7 +17,7 @@ public class ScoreShadow : MonoBehaviour
 
 	void Update ()
 	{
-		// Set the text to equal the copy's text.
+		// Se establece el texto
 		GetComponent<GUIText>().text = guiCopy.GetComponent<GUIText>().text;
 	}
 }
