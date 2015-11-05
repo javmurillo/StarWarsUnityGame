@@ -28,14 +28,15 @@ public class Lightsaber : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        Debug.Log("entra triger col");
-
         if (col.tag == "BattleDroid")
         {
-            Debug.Log("da al droid");
             col.GetComponent<BattleDroid>().Hurt();
         }
-        else if (col.tag == "BdroidBullet")
+        else if (col.tag == "Droideka")
+        {
+            col.GetComponent<Droideka>().Hurt();
+        }
+        else if (col.tag == "LaserBullet")
         {
             Rigidbody2D colrb = col.gameObject.GetComponent<Rigidbody2D>();
             col.gameObject.GetComponent<Bullet>().setReflected(true);

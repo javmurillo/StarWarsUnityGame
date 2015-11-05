@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Bullet : MonoBehaviour 
 {
-	public GameObject explosion;		// Prefab of explosion effect.
+	public GameObject bulletExplosion;		// Prefab of explosion effect.
 	private Rigidbody2D myRigidbody;
     private bool reflected = false;
 
@@ -13,7 +13,7 @@ public class Bullet : MonoBehaviour
 
     void Start () 
 	{
-		// Destroy the rocket after 2 seconds if it doesn't get destroyed before then.
+		// Destroy the rocket after 5 seconds if it doesn't get destroyed before then.
 		Destroy(gameObject, 5);
 		myRigidbody = GetComponent<Rigidbody2D> ();
 		allMyAudioSources = GetComponents<AudioSource>();
@@ -30,13 +30,16 @@ public class Bullet : MonoBehaviour
 		Quaternion randomRotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
 		
 		// Instantiate the explosion where the rocket is with the random rotation.
-		//Instantiate(explosion, transform.position, randomRotation);
+		Instantiate(bulletExplosion, transform.position, randomRotation);
 	}
 	
 	void OnTriggerEnter2D (Collider2D col) 
 	{
         if (col.tag == "Player") {
             col.GetComponent<PlayerHealth>().serDisparado(this.GetComponent<Collider2D>());
+            OnExplode();
+            Destroy(gameObject);
+
         }
 
         else if (col.tag == "BattleDroid")
@@ -44,6 +47,16 @@ public class Bullet : MonoBehaviour
             if (reflected)
             {
                 col.GetComponent<BattleDroid>().Hurt();
+                OnExplode();
+                Destroy(gameObject);
+            }
+
+        }
+        else if (col.tag == "Droideka")
+        {
+            if (reflected)
+            {
+                OnExplode();
                 Destroy(gameObject);
             }
 

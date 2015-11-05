@@ -81,8 +81,8 @@ public class PlayerHealth : MonoBehaviour
     public void serDisparado(Collider2D col)
     {
         // ... and if the time exceeds the time of the last hit plus the time between hits...
-        if (Time.time > lastHitTime + repeatDamagePeriod)
-        {
+       // if (Time.time > lastHitTime + repeatDamagePeriod)
+        if (true) {
             // ... and if the player still has health...
             if (health > 0f)
             {

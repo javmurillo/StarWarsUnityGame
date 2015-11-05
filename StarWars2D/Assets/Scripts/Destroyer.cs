@@ -7,10 +7,12 @@ public class Destroyer : MonoBehaviour
 	public float awakeDestroyDelay;		// The delay for destroying it on Awake.
 	public bool findChild = false;				// Find a child game object and delete it
 	public string namedChild;			// Name the child object in Inspector
+    private SpriteRenderer sr;
 
 
 	void Awake ()
 	{
+        sr = GetComponent<SpriteRenderer>();
 		// If the gameobject should be destroyed on awake,
 		if(destroyOnAwake)
 		{
@@ -47,4 +49,10 @@ public class Destroyer : MonoBehaviour
 		// Destroy this gameobject, this can be called from an Animation Event.
 		Destroy (gameObject);
 	}
+
+    void DestroySpriteRenderer()
+    {
+        // Destroy this gameobject, this can be called from an Animation Event.
+        sr.enabled = false;
+    }
 }
