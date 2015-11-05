@@ -17,6 +17,13 @@ public class PlayerHealth : MonoBehaviour
 	private Animator anim;						// Reference to the Animator on the player
 
     private GameObject rg;
+    private Renderer ren;
+
+    Rigidbody2D body;
+    Vector3 pushDir;
+    float power = 2.0f;
+    float minPower = 0.5f;
+    float maxPower = 3.0f;
 
     void Awake ()
 	{
@@ -28,14 +35,17 @@ public class PlayerHealth : MonoBehaviour
 		// Getting the intial scale of the healthbar (whilst the player has full health).
 		healthScale = healthBar.transform.localScale;
         rg = GameObject.Find("Hero");
+        body = rg.GetComponent<Rigidbody2D>();
+        ren = rg.GetComponent<Renderer>();
 
     }
 
 
-    void OnCollisionEnter2D (Collision2D col)
-	{
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        //Debug.Log("nombre: " + col.gameObject.name);
 		// If the colliding gameobject is an Enemy...
-		if(col.gameObject.tag == "BattleDroid")
+		if(col.tag == "BattleDroid" || col.tag == "Droideka")
 		{
             // ... and if the time exceeds the time of the last hit plus the time between hits...
             //if (Time.time > lastHitTime + repeatDamagePeriod) 
@@ -51,20 +61,6 @@ public class PlayerHealth : MonoBehaviour
 				// If the player doesn't have health, do some stuff, let him fall into the river to reload the level.
 				else
 				{
-					// Find all of the colliders on the gameobject and set them all to be triggers.
-					Collider2D[] cols = GetComponents<Collider2D>();
-					foreach(Collider2D c in cols)
-					{
-						c.isTrigger = true;
-					}
-
-					// Move all sprite parts of the player to the front
-					SpriteRenderer[] spr = GetComponentsInChildren<SpriteRenderer>();
-					foreach(SpriteRenderer s in spr)
-					{
-						s.sortingLayerName = "UI";
-					}
-
 					// ... disable user Player Control script
 					GetComponent<PlayerController>().enabled = false;
 
@@ -93,19 +89,6 @@ public class PlayerHealth : MonoBehaviour
             // If the player doesn't have health, do some stuff, let him fall into the river to reload the level.
             else
             {
-                // Find all of the colliders on the gameobject and set them all to be triggers.
-                Collider2D[] cols = GetComponents<Collider2D>();
-                foreach (Collider2D c in cols)
-                {
-                    c.isTrigger = true;
-                }
-
-                // Move all sprite parts of the player to the front
-                SpriteRenderer[] spr = GetComponentsInChildren<SpriteRenderer>();
-                foreach (SpriteRenderer s in spr)
-                {
-                    s.sortingLayerName = "UI";
-                }
 
                 // ... disable user Player Control script
                 GetComponent<PlayerController>().enabled = false;
@@ -119,18 +102,30 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+
     void TakeDamage (Transform enemy)
 	{
-        Debug.Log("take damage");
+
+
+        Debug.Log("TAAAAG: " + enemy.tag);
 		// Make sure the player can't jump.
 		playerControl.jump = false;
 
-        // Create a vector that's from the enemy to the player with an upwards boost.
-        Vector3 hurtVector = transform.position - enemy.position + Vector3.up * 5f;
+        if (enemy.tag != "LaserBullet")
+            body.velocity = (Vector3) body.velocity + Vector3.up * 2;
+
+
+        /* if (enemy.tag != "LaserBullet") {
+              float Xdif = transform.position.x - enemy.position.x;
+              float Ydif = transform.position.y - enemy.position.y;
+              transform.gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(Xdif, Ydif).normalized * 500); */
+
+
+
 
         // Add a force to the player in the direction of the vector and multiply by the hurtForce.
         //GetComponent<Rigidbody2D>().AddForce(hurtVector * hurtForce);
-      //  transform.Translate(Vector2.up * 5);
+        //  transform.Translate(Vector2.up * 5);
 
         // Reduce the player's health by 10.
         health -= damageAmount;
@@ -152,4 +147,6 @@ public class PlayerHealth : MonoBehaviour
 		// Set the scale of the health bar to be proportional to the player's health.
 		healthBar.transform.localScale = new Vector3(healthScale.x * health * 0.01f, 1, 1);
 	}
+
+
 }

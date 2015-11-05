@@ -201,7 +201,6 @@ public class Droideka : MonoBehaviour
 
         // Se declara la muerte del personaje, desactivando sus componentes
         dead = true;
-        Destroy(GetComponent<Rigidbody2D>());
         Destroy(GetComponent<BoxCollider2D>());
 
         // Increase the score by 100 points
