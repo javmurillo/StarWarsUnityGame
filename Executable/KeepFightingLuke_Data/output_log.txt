@@ -1,0 +1,31 @@
+Initialize engine version: 5.2.1f1 (44735ea161b3)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 960 (ID=0x1401)
+    Vendor:   NVIDIA
+    VRAM:     3072 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: D:\Downloads\KeepFightingLuke_JavierMurillo\Ejecutable\KeepFightingLuke_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\Downloads\KeepFightingLuke_JavierMurillo\Ejecutable\KeepFightingLuke_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\Downloads\KeepFightingLuke_JavierMurillo\Ejecutable\KeepFightingLuke_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading D:\Downloads\KeepFightingLuke_JavierMurillo\Ejecutable\KeepFightingLuke_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: D:\Downloads\KeepFightingLuke_JavierMurillo\Ejecutable\KeepFightingLuke_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\Downloads\KeepFightingLuke_JavierMurillo\Ejecutable\KeepFightingLuke_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: D:\Downloads\KeepFightingLuke_JavierMurillo\Ejecutable\KeepFightingLuke_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading D:\Downloads\KeepFightingLuke_JavierMurillo\Ejecutable\KeepFightingLuke_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: D:\Downloads\KeepFightingLuke_JavierMurillo\Ejecutable\KeepFightingLuke_Data\Managed\System.Core.dll (this message is harmless)
+- Completed reload, in  0.039 seconds
+desktop: 1920x1080 144Hz; virtual: 3840x1080 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+Platform assembly: D:\Downloads\KeepFightingLuke_JavierMurillo\Ejecutable\KeepFightingLuke_Data\Managed\System.dll (this message is harmless)
+Setting up 1 worker threads for Enlighten.
+  Thread -> id: 2f08 -> priority: 1 
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 3.418004 ms
+
+Unloading 5 unused Assets to reduce memory usage. Loaded Objects now: 663.
+Total: 0.341917 ms (FindLiveObjects: 0.026885 ms CreateObjectMapping: 0.023671 ms MarkObjects: 0.278209 ms  DeleteObjects: 0.012566 ms)
+
